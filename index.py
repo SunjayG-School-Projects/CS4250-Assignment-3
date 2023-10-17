@@ -5,6 +5,7 @@
 # FOR: CS 4250- Assignment #2
 # TIME SPENT: how long it took you to complete the assignment
 #-----------------------------------------------------------*/
+import string
 
 #importing some Python libraries
 from db_connection import *
@@ -43,31 +44,33 @@ if __name__ == '__main__':
 
           elif (option == "b"):
 
-              docId = input("Enter the ID of the document: ")
-              docText = input("Enter the text of the document: ")
-              docTitle = input("Enter the title of the document: ")
-              docDate = input("Enter the date of the document: ")
-              docCat = input("Enter the category of the document: ")
+              doc_number = input("Enter the ID of the document: ")
+              text = input("Enter the text of the document: ")
+              title = input("Enter the title of the document: ")
+              date = input("Enter the date of the document: ")
+              category_name = input("Enter the category of the document: ")
 
-              createDocument(cur, docId, docText, docTitle, docDate, docCat)
+              num_chars = len(text)
+
+              createDocument(cur, doc_number, text, title, date, num_chars, category_name)
               conn.commit()
 
           elif (option == "c"):
 
-              docId = input("Enter the ID of the document: ")
-              docText = input("Enter the text of the document: ")
-              docTitle = input("Enter the title of the document: ")
-              docDate = input("Enter the date of the document: ")
-              docCat = input("Enter the category of the document: ")
+              doc_number = input("Enter the ID of the document: ")
+              text = input("Enter the text of the document: ")
+              title = input("Enter the title of the document: ")
+              date = input("Enter the date of the document: ")
+              category_id = input("Enter the category of the document: ")
 
-              updateDocument(cur, docId, docText, docTitle, docDate, docCat)
+              updateDocument(cur, doc_number, text, title, date, category_id)
 
               conn.commit()
 
           elif (option == "d"):
 
-              docId = input("Enter the document id to be deleted: ")
-              deleteDocument(cur, docId)
+              doc_number = input("Enter the document id to be deleted: ")
+              deleteDocument(cur, doc_number)
               conn.commit()
 
           elif (option == "e"):
