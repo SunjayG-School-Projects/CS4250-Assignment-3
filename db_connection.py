@@ -120,13 +120,13 @@ def deleteDocument(cur, doc_number):
         cur.execute("SELECT text, count FROM index WHERE doc_number = %s;", (doc_number,))
         term_counts = cur.fetchall()
 
-        for term, count in term_counts:
+        for text, count in term_counts:
             # 1.1 For each term identified, delete its occurrences in the index for that document
             cur.execute("DELETE FROM index WHERE doc_number = %s AND text = %s;", (doc_number, text))
 
             # 1.2 Check if there are no more occurrences of the term in another document
             cur.execute("SELECT COUNT(*) FROM index WHERE text = %s;", (text,))
-            term_count = cur.fetchone()[0]
+            term_count = cur.fetchone()["count"]
 
             if term_count == 0:
                 # If no more occurrences of the term, delete the term from the database
@@ -134,7 +134,6 @@ def deleteDocument(cur, doc_number):
 
         # 2. Delete the document from the database
         cur.execute("DELETE FROM documents WHERE doc_number = %s;", (doc_number,))
-        cur.execute("DELETE FROM index WHERE doc_number = %s;", (doc_number,))
 
         # Commit the transaction to apply the changes
         cur.connection.commit()
@@ -146,33 +145,10 @@ def deleteDocument(cur, doc_number):
         print("Error: Unable to delete document.")
         print(e)
 
-def updateDocument(cur, doc_number, text, title, date, category_id):
-
-    # 1 Delete the document
-    # --> add your Python code here
-
-    # 2 Create the document with the same id
-    # --> add your Python code here
-    try:
-        # 1. Delete the document
-        cur.execute("DELETE FROM documents WHERE doc_number = %s;", (doc_number,))
-
-        # 2. Create the document with the same id
-        # Discard spaces and punctuation marks to calculate num_chars
-        num_chars = len(''.join([char for char in text if char not in string.whitespace + string.punctuation]))
-        cur.execute("""
-                INSERT INTO Documents (doc_number, title, date, text, num_chars, category_id)
-                VALUES (%s, %s, %s, %s, %s, (SELECT category_id FROM Categories WHERE id = %s));
-            """, (doc_number, title, date, text, num_chars, category_id))
-        # Commit the transaction to apply the changes
-        cur.connection.commit()
-
-        print("Document updated successfully.")
-    except psycopg2.Error as e:
-        # Rollback the transaction in case of an error
-        cur.connection.rollback()
-        print("Error: Unable to update document.")
-        print(e)
+def updateDocument(cur, doc_number, text, title, date, category_name):
+    deleteDocument(cur, doc_number)
+    num_chars = len(''.join([char for char in text if char not in string.whitespace + string.punctuation]))
+    createDocument(cur, doc_number, text, title, date, num_chars, category_name)
 
 
 def getIndex(cur):
