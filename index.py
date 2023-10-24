@@ -1,9 +1,9 @@
 #-------------------------------------------------------------------------
-# AUTHOR: your name
-# FILENAME: title of the source file
-# SPECIFICATION: description of the program
+# AUTHOR: Sunjay Guttikonda
+# FILENAME: index.py
+# SPECIFICATION: Driver program that triggers the operations by calling the functions and feeding them user-inputted data
 # FOR: CS 4250- Assignment #2
-# TIME SPENT: how long it took you to complete the assignment
+# TIME SPENT: 5.5 hours
 #-----------------------------------------------------------*/
 import string
 

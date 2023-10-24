@@ -1,10 +1,10 @@
 
 # -------------------------------------------------------------------------
-# AUTHOR: your name
-# FILENAME: title of the source file
-# SPECIFICATION: description of the program
-# FOR: CS 4250- Assignment #1
-# TIME SPENT: how long it took you to complete the assignment
+# AUTHOR: Sunjay Guttikonda
+# FILENAME: db_connection.py
+# SPECIFICATION: Contains the functions for all the features used to create and edit databases in pgAdmin (PostgreSQL)
+# FOR: CS 4250- Assignment #2
+# TIME SPENT: 5.5 hours
 # -----------------------------------------------------------*/
 
 # IMPORTANT NOTE: DO NOT USE ANY ADVANCED PYTHON LIBRARY TO COMPLETE THIS CODE SUCH AS numpy OR pandas. You have to work here only with
@@ -20,7 +20,7 @@ import psycopg2
 def connectDataBase():
 
     # Create a database connection object using psycopg2
-    DB_NAME = "CS4250-Assignment-2"
+    DB_NAME = "corpus"
     DB_USER = "postgres"
     DB_PASS = "123"
     DB_HOST = "localhost"
@@ -60,7 +60,6 @@ def createDocument(cur, doc_number, text, title, date, num_chars, category_name)
     # 1 Get the category id based on the informed category name
     cur.execute("SELECT id FROM categories WHERE name = %s;", (category_name,))
     category_id = cur.fetchone()["id"]
-    print("|", category_id, "|")
     # 2 Insert the document in the database. For num_chars, discard the spaces and punctuation marks.
     cur.execute("INSERT INTO documents VALUES (%s, %s, %s, %s, %s, %s);",
                 (doc_number, title, date, text, num_chars, category_id))
@@ -164,20 +163,19 @@ def getIndex(cur):
         index_dict = {}
 
         for row in rows:
-            print("|" + str(row) + "|")
             #title, text, count = row
             title = row['title']
             text = row['text']
             count = row['count']
-            print("|" + title + "|" + text + "|" + str(count) + "|")
             # If term is not already in the index_dict, add it
             if text not in index_dict:
                 index_dict[row['text']] = f"{row['title']}:{row['count']}"
-                print("not in: " + str(index_dict))
+                #print("not in: " + str(index_dict))
             else:
                 # If term is already in the index_dict, append the new document and count
+
                 index_dict[row["text"]] += f",{row['title']}:{row['count']}"
-                print("in: " + str(index_dict))
+                #print("in: " + str(index_dict))
 
         return index_dict
     except psycopg2.Error as e:
